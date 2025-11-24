@@ -31,19 +31,16 @@ spec:
           # Environment variables from Secret Manager
           env:
             - name: FMCSA_API_KEY
-              valueSource:
+              valueFrom:
                 secretKeyRef:
-                  # Secret Manager secret name
-                  secret: ${FMCSA_SECRET_NAME}
+                  name: ${FMCSA_SECRET_NAME}
+                  key: latest
 
             - name: INTERNAL_API_KEY
-              valueSource:
+              valueFrom:
                 secretKeyRef:
-                  secret: ${INTERNAL_SECRET_NAME}
-
-          # Optional: direct (non-secret) env vars
-          # - name: SOME_CONFIG
-          #   value: "some-value"
+                  name: ${INTERNAL_SECRET_NAME}
+                  key: latest
 
           # Optional: container resources
           resources:
