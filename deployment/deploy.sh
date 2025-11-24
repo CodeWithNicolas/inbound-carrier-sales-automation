@@ -31,6 +31,9 @@ echo "Using image URL:  ${IMAGE_URL}"
 # --- gcloud project ---
 gcloud config set project "${PROJECT_ID}"
 
+# --- enable services ---
+gcloud services enable secretmanager.googleapis.com >/dev/null 2>&1 || true
+
 # --- ensure Artifact Registry repo exists ---
 gcloud artifacts repositories create carrier-api-repo \
   --repository-format=docker \

@@ -1,4 +1,4 @@
-apiVersion: run.googleapis.com/v1
+apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: carrier-api
@@ -13,18 +13,16 @@ spec:
       containers:
         - image: ${IMAGE_URL}
           env:
-            # FMCSA API key from Secret Manager
             - name: FMCSA_API_KEY
-              valueSource:
+              valueFrom:
                 secretKeyRef:
-                  secret: fmcsa-api-key
-                  version: latest
-            # Internal API key from Secret Manager
+                  name: fmcsa-api-key
+                  key: latest
             - name: INTERNAL_API_KEY
-              valueSource:
+              valueFrom:
                 secretKeyRef:
-                  secret: internal-api-key
-                  version: latest
+                  name: internal-api-key
+                  key: latest
           ports:
             - containerPort: 8080
       serviceAccountName: default
