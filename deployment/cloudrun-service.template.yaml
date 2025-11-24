@@ -6,13 +6,13 @@ metadata:
   annotations:
     # Choose ingress policy: "all", "internal", or "internal-and-cloud-load-balancing"
     run.googleapis.com/ingress: all
-    # Optional: execution environment (gen1 | gen2)
-    run.googleapis.com/execution-environment: gen2
 
 spec:
   template:
     metadata:
       annotations:
+        # Optional: execution environment (gen1 | gen2)
+        run.googleapis.com/execution-environment: gen2
         # Minimum number of instances (0 = scale to zero)
         autoscaling.knative.dev/minScale: "0"
         # Maximum number of instances
