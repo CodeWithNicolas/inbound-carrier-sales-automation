@@ -1,28 +1,52 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: carrier-api
+  # Cloud Run service name
+  name: ${SERVICE_NAME}
   annotations:
+    # Choose ingress policy: "all", "internal", or "internal-and-cloud-load-balancing"
     run.googleapis.com/ingress: all
+    # Optional: execution environment (gen1 | gen2)
+    run.googleapis.com/execution-environment: gen2
+
 spec:
   template:
     metadata:
       annotations:
-        run.googleapis.com/execution-environment: gen2
+        # Minimum number of instances (0 = scale to zero)
+        autoscaling.knative.dev/minScale: "0"
+        # Maximum number of instances
+        autoscaling.knative.dev/maxScale: "10"
+        # Optional: concurrency (requests per container)
+        autoscaling.knative.dev/target: "80"
     spec:
+      # Service account the Cloud Run service runs as
+      serviceAccountName: ${SERVICE_ACCOUNT_EMAIL}
+
       containers:
         - image: ${IMAGE_URL}
-          env:
-            - name: FMCSA_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: fmcsa-api-key
-                  key: latest
-            - name: INTERNAL_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: internal-api-key
-                  key: latest
           ports:
             - containerPort: 8080
-      serviceAccountName: default
+
+          # Environment variables from Secret Manager
+          env:
+            - name: FMCSA_API_KEY
+              valueSource:
+                secretKeyRef:
+                  # Secret Manager secret name
+                  secret: ${FMCSA_SECRET_NAME}
+
+            - name: INTERNAL_API_KEY
+              valueSource:
+                secretKeyRef:
+                  secret: ${INTERNAL_SECRET_NAME}
+
+          # Optional: direct (non-secret) env vars
+          # - name: SOME_CONFIG
+          #   value: "some-value"
+
+          # Optional: container resources
+          resources:
+            limits:
+              cpu: "1"
+              memory: "512Mi"
