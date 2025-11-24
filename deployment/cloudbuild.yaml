@@ -1,0 +1,18 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '-t'
+      - '${_IMAGE_URL}'
+      - '.'
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - '${_IMAGE_URL}'
+
+images:
+  - '${_IMAGE_URL}'
+
+substitutions:
+  _IMAGE_URL: 'us-central1-docker.pkg.dev/$PROJECT_ID/carrier-api-repo/carrier-api:latest'
