@@ -158,7 +158,6 @@ def evaluate_negotiation(req: NegotiationRequest, _authorized: bool = Depends(ve
 
 class CallLogEntry(BaseModel):
     """Log entry for a negotiation call."""
-    call_id: str                           # unique id from HappyRobot / your own
     carrier_mc: str                        # carrier's MC number
     load_id: Optional[str] = None          # load that was pitched/booked
     initial_rate: Optional[float] = None   # first rate discussed
