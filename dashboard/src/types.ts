@@ -18,9 +18,9 @@ export interface MetricsSummary {
 export interface CallLogEntry {
   carrier_mc: string;
   load_id: string | null;
-  initial_rate: number | null;
-  final_rate: number | null;
-  num_rounds: number;
+  initial_rate: string | null;
+  final_rate: string | null;
+  num_rounds: string;
   outcome: Outcome;
   sentiment: Sentiment;
   notes: string | null;

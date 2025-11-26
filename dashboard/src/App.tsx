@@ -241,9 +241,9 @@ function App() {
                         <td style={tdStyle}>{OUTCOME_LABELS[c.outcome]}</td>
                         <td style={tdStyle}>{SENTIMENT_LABELS[c.sentiment]}</td>
                         <td style={tdStyle}>
-                          {c.initial_rate != null ? `$${c.initial_rate}` : "—"}{" "}
+                          {c.initial_rate != null ? `$${parseFloat(c.initial_rate).toFixed(0)}` : "—"}{" "}
                           →{" "}
-                          {c.final_rate != null ? `$${c.final_rate}` : "—"}
+                          {c.final_rate != null ? `$${parseFloat(c.final_rate).toFixed(0)}` : "—"}
                         </td>
                         <td style={tdStyle}>{c.num_rounds}</td>
                         <td style={{ ...tdStyle, maxWidth: 260 }}>

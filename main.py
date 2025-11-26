@@ -27,9 +27,7 @@ def load_loads() -> List[dict]:
     with CSV_PATH.open(newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
-            for field in ["loadboard_rate", "weight", "num_of_pieces", "miles"]:
-                if row.get(field):
-                    row[field] = float(row[field]) if field == "loadboard_rate" else int(row[field])
+            # Keep all values as strings - dashboard will handle conversion
             loads.append(row)
     return loads
 
@@ -160,9 +158,9 @@ class CallLogEntry(BaseModel):
     """Log entry for a negotiation call."""
     carrier_mc: str                        # carrier's MC number
     load_id: Optional[str] = None          # load that was pitched/booked
-    initial_rate: Optional[float] = None   # first rate discussed
-    final_rate: Optional[float] = None     # final agreed/last offered rate
-    num_rounds: int = 0                    # how many negotiation rounds
+    initial_rate: Optional[str] = None     # first rate discussed (as string)
+    final_rate: Optional[str] = None       # final agreed/last offered rate (as string)
+    num_rounds: str = "0"                  # how many negotiation rounds (as string)
     outcome: Literal[
         "booked",
         "lost_price",
@@ -202,7 +200,8 @@ def metrics_summary(_authorized: bool = Depends(verify_api_key)):
         }
 
     booked = sum(1 for c in CALL_LOG if c.outcome == "booked")
-    total_rounds = sum(c.num_rounds for c in CALL_LOG)
+    # Convert num_rounds from string to int for calculation
+    total_rounds = sum(int(c.num_rounds) if c.num_rounds else 0 for c in CALL_LOG)
 
     sentiments = {}
     for c in CALL_LOG:
