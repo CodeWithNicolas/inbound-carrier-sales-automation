@@ -302,3 +302,10 @@ def validate_carrier(req: CarrierValidationRequest, _authorized: bool = Depends(
     Validate a carrier by MC number using the real FMCSA mobile API.
     """
     return _validate_mc_with_fmcsa(req.mc_number)
+
+@app.get("/metrics/calls", response_model=List[CallLogEntry])
+def metrics_calls(_authorized: bool = Depends(verify_api_key)):
+    """
+    Return the raw call log entries (most recent first).
+    """
+    return list(reversed(CALL_LOG))
