@@ -9,6 +9,7 @@ from typing import List, Optional, Literal
 from dotenv import load_dotenv
 import requests
 from fastapi import FastAPI, Query, HTTPException, Depends, Header, status
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 load_dotenv()
@@ -19,6 +20,17 @@ API_KEY = os.getenv("INTERNAL_API_KEY")
 API_KEY_HEADER_NAME = "x-api-key"
 
 app = FastAPI(title="Acme Logistics Load API")
+
+# Add CORS middleware to allow frontend to communicate with backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def load_loads() -> List[dict]:
