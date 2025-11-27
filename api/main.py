@@ -29,7 +29,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",  # Local development
-        "https://carrier-dashboard-znfljh5y5a-uc.a.run.app/",  # Deployed dashboard
+        "https://carrier-dashboard-znfljh5y5a-uc.a.run.app",  # Deployed dashboard
     ],
     allow_credentials=True,
     allow_methods=["*"],
