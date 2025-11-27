@@ -13,6 +13,9 @@ export interface MetricsSummary {
   booking_rate: number; // 0–1
   avg_rounds: number;
   sentiment_breakdown: Record<Sentiment, number>;
+  total_revenue: number;
+  revenue_per_call: number;
+  avg_call_duration: number; // in seconds
 }
 
 export interface CallLogEntry {
@@ -23,6 +26,7 @@ export interface CallLogEntry {
   num_rounds: string;
   outcome: Outcome;
   sentiment: Sentiment;
+  call_duration_seconds: number | null;
   notes: string | null;
   created_at: string; // ISO timestamp
 }

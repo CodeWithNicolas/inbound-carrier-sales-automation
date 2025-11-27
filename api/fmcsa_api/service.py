@@ -106,30 +106,30 @@ class FMCSAClient:
                 reasons.append("out of service")
             status_msg = f"✗ {legal_name}: {', '.join(reasons)}"
 
-        # Return structured result
+        # Return structured result (all fields as strings for HappyRobot compatibility)
         return {
             "mc_number": mc_number,
-            "is_valid": is_eligible,
+            "is_valid": "true" if is_eligible else "false",
             "status": "active" if is_eligible else "inactive",
             "carrier_name": legal_name,
             "allowed_to_operate": allowed,
             "out_of_service": out_of_service,
-            "complaint_count": complaint_count,
-            "percentile": percentile,
-            "total_violations": total_violations,
+            "complaint_count": str(complaint_count),
+            "percentile": percentile if percentile else "N/A",
+            "total_violations": str(total_violations),
             "address": street,
             "city": city,
             "state": state,
             "zip_code": zip_code,
             "phone": phone,
-            "insurance_on_file": insurance_on_file,
-            "insurance_required": insurance_required,
+            "insurance_on_file": str(insurance_on_file),
+            "insurance_required": str(insurance_required),
             "carrier_operation": operation_desc,
             "reason": status_msg
         }
 
     def _extract_percentile(self, content_item: Dict) -> Optional[str]:
-        """Extract percentile from BASICs data if available."""
+        """Extract percentile from BASICs data if available (returns None if not available)."""
         basics = content_item.get("basics", [])
         if not isinstance(basics, list) or len(basics) == 0:
             return None
@@ -138,7 +138,7 @@ class FMCSAClient:
         first_basic = basics[0]
         percentile = first_basic.get("percentile")
 
-        # Return None if percentile is not a useful value
+        # Return None if percentile is not a useful value (will be converted to "N/A" by caller)
         if percentile in ["inconclusive", "no violations", "insufficient data", None, ""]:
             return None
 
@@ -166,47 +166,47 @@ class FMCSAClient:
             return 0
 
     def _build_not_found_result(self, mc_number: str) -> Dict:
-        """Build result for carrier not found."""
+        """Build result for carrier not found (all fields as strings)."""
         return {
             "mc_number": mc_number,
-            "is_valid": False,
+            "is_valid": "false",
             "status": "not_found",
             "carrier_name": "Unknown",
             "allowed_to_operate": "N",
             "out_of_service": "N",
-            "complaint_count": 0,
-            "percentile": None,
-            "total_violations": 0,
+            "complaint_count": "0",
+            "percentile": "N/A",
+            "total_violations": "0",
             "address": "",
             "city": "",
             "state": "",
             "zip_code": "",
             "phone": "",
-            "insurance_on_file": 0,
-            "insurance_required": 0,
+            "insurance_on_file": "0",
+            "insurance_required": "0",
             "carrier_operation": "",
             "reason": f"MC {mc_number} not found in FMCSA database"
         }
 
     def _build_error_result(self, error_message: str) -> Dict:
-        """Build result for API errors."""
+        """Build result for API errors (all fields as strings)."""
         return {
             "mc_number": "",
-            "is_valid": False,
+            "is_valid": "false",
             "status": "error",
             "carrier_name": "Unknown",
             "allowed_to_operate": "N",
             "out_of_service": "N",
-            "complaint_count": 0,
-            "percentile": None,
-            "total_violations": 0,
+            "complaint_count": "0",
+            "percentile": "N/A",
+            "total_violations": "0",
             "address": "",
             "city": "",
             "state": "",
             "zip_code": "",
             "phone": "",
-            "insurance_on_file": 0,
-            "insurance_required": 0,
+            "insurance_on_file": "0",
+            "insurance_required": "0",
             "carrier_operation": "",
             "reason": f"FMCSA API error: {error_message}"
         }

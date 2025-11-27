@@ -13,13 +13,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy dependency file first (for better Docker cache)
-COPY requirements.txt .
+COPY api/requirements.txt .
 
 # Install Python deps
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the app code
-COPY . .
+# Copy the app code and database
+COPY api/ ./api/
+COPY database/ ./database/
 
 # Expose the port uvicorn will listen on
 EXPOSE 8080
@@ -30,5 +31,5 @@ ENV PORT=8080
 # Run as non-root
 USER appuser
 
-# Start the FastAPI app with uvicorn
-CMD ["bash", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT}"]
+# Start the FastAPI app with uvicorn from api directory
+CMD ["bash", "-c", "cd api && uvicorn main:app --host 0.0.0.0 --port ${PORT}"]

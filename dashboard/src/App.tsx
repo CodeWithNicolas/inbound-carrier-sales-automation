@@ -19,6 +19,14 @@ function formatDateTime(iso: string) {
   return new Date(iso).toLocaleString();
 }
 
+function formatCallDuration(seconds: number): string {
+  if (seconds === 0) return "N/A";
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.round(seconds % 60);
+  if (mins === 0) return `${secs}s`;
+  return `${mins}m ${secs}s`;
+}
+
 const OUTCOME_LABELS: Record<Outcome, string> = {
   booked: "Booked",
   lost_price: "Lost – Price",
@@ -148,6 +156,18 @@ function App() {
               )}%`}
             />
             <KpiCard
+              label="Total revenue"
+              value={`$${summary.total_revenue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
+            />
+            <KpiCard
+              label="Revenue per call"
+              value={`$${summary.revenue_per_call.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
+            />
+            <KpiCard
+              label="Avg call time"
+              value={formatCallDuration(summary.avg_call_duration)}
+            />
+            <KpiCard
               label="Avg negotiation rounds"
               value={summary.avg_rounds.toFixed(2)}
             />
@@ -229,6 +249,7 @@ function App() {
                       <th style={thStyle}>Sentiment</th>
                       <th style={thStyle}>Initial / Final rate</th>
                       <th style={thStyle}>Rounds</th>
+                      <th style={thStyle}>Duration</th>
                       <th style={thStyle}>Notes</th>
                     </tr>
                   </thead>
@@ -251,6 +272,11 @@ function App() {
                           {c.final_rate != null ? `$${parseFloat(c.final_rate).toFixed(0)}` : "—"}
                         </td>
                         <td style={tdStyle}>{c.num_rounds}</td>
+                        <td style={tdStyle}>
+                          {c.call_duration_seconds != null 
+                            ? formatCallDuration(c.call_duration_seconds)
+                            : "—"}
+                        </td>
                         <td style={{ ...tdStyle, maxWidth: 260 }}>
                           {c.notes ?? "—"}
                         </td>

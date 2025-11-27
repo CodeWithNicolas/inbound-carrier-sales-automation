@@ -1,4 +1,35 @@
+# Environment variables
 .env
+.env.local
+
+# Python
 /venv
-/__pycache__
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# API
+/api/__pycache__
+/api/**/__pycache__
+
+# Deployment
 cloudrun-service.yaml
+deployment/cloudrun-service.yaml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node modules (dashboard)
+/dashboard/node_modules
+/dashboard/dist
+/dashboard/.env.local
