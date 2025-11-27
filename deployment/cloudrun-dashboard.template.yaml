@@ -1,0 +1,30 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: carrier-dashboard
+  annotations:
+    run.googleapis.com/ingress: all
+
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/execution-environment: gen2
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "10"
+        autoscaling.knative.dev/target: "80"
+    spec:
+      containers:
+        - image: ${DASHBOARD_IMAGE_URL}
+          ports:
+            - containerPort: 8080
+
+          # Environment variables for API connection (built into the static files)
+          # Note: For Vite apps, env vars must be set at build time, not runtime
+          # The API URL will be injected during the Cloud Run deployment
+
+          resources:
+            limits:
+              cpu: "1"
+              memory: "512Mi"
+

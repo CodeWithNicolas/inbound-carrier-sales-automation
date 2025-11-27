@@ -17,6 +17,7 @@ __pycache__/
 # Deployment
 cloudrun-service.yaml
 deployment/cloudrun-service.yaml
+deployment/cloudrun-dashboard.yaml
 
 # IDE
 .vscode/

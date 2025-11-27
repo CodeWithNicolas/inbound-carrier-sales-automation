@@ -1,0 +1,27 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '-t'
+      - '${_DASHBOARD_IMAGE_URL}'
+      - '-f'
+      - 'dashboard/Dockerfile'
+      - '--build-arg'
+      - 'VITE_API_BASE_URL=${_API_URL}'
+      - '--build-arg'
+      - 'VITE_INTERNAL_API_KEY=${_INTERNAL_API_KEY}'
+      - 'dashboard'
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - '${_DASHBOARD_IMAGE_URL}'
+
+images:
+  - '${_DASHBOARD_IMAGE_URL}'
+
+substitutions:
+  _DASHBOARD_IMAGE_URL: 'us-central1-docker.pkg.dev/$PROJECT_ID/carrier-dashboard-repo/carrier-dashboard:latest'
+  _API_URL: ''
+  _INTERNAL_API_KEY: ''
+
