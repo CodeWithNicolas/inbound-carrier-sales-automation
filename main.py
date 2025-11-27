@@ -7,10 +7,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Literal
 from dotenv import load_dotenv
-import requests
 from fastapi import FastAPI, Query, HTTPException, Depends, Header, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from fmcsa_api import FMCSAClient
 
 load_dotenv()
 
@@ -233,78 +233,49 @@ class CarrierValidationRequest(BaseModel):
 
 
 class CarrierValidationResponse(BaseModel):
-    """Response for carrier validation."""
+    """Response for carrier validation with detailed FMCSA data."""
     mc_number: str
     is_valid: bool
-    status: str               # e.g. "active", "inactive", "not_found", "error"
-    reason: str | None = None # human-readable explanation
+    status: str
+    carrier_name: str
+    allowed_to_operate: str
+    out_of_service: str
+    complaint_count: int
+    percentile: Optional[str] = None
+    total_violations: int
+    address: str
+    city: str
+    state: str
+    zip_code: str
+    phone: str
+    insurance_on_file: int
+    insurance_required: int
+    carrier_operation: str
+    reason: str
 
 def _validate_mc_with_fmcsa(mc_number: str) -> CarrierValidationResponse:
+    """
+    Validate carrier using FMCSA API with comprehensive data extraction.
+    """
     if not FMCSA_API_KEY:
-        # You can also log this instead of raising
         raise HTTPException(
             status_code=500,
             detail="FMCSA_API_KEY not configured on the server",
         )
 
-    mc_number = mc_number.strip()
-
-    url = (
-        f"https://mobile.fmcsa.dot.gov/qc/services/carriers/"
-        f"docket-number/{mc_number}?webKey={FMCSA_API_KEY}"
-    )
-
-    try:
-        response = requests.get(url, timeout=10)
-    except requests.RequestException as e:
-        # Network / timeout error
+    # Create FMCSA client and fetch carrier info
+    client = FMCSAClient(api_key=FMCSA_API_KEY)
+    result = client.get_carrier_info(mc_number)
+    
+    # Handle API errors with HTTP exceptions
+    if result["status"] == "error":
         raise HTTPException(
             status_code=502,
-            detail=f"Error calling FMCSA API: {e}"
+            detail=result["reason"]
         )
-
-    # Debug prints (use logging in real code)
-    print("FMCSA API status:", response.status_code)
-    print("Response snippet:", response.text[:300])
-
-    if response.status_code != 200:
-        raise HTTPException(
-            status_code=502,
-            detail=f"FMCSA API error, status {response.status_code}"
-        )
-
-    try:
-        data = response.json()
-    except ValueError:
-        raise HTTPException(
-            status_code=502,
-            detail="FMCSA API returned invalid JSON"
-        )
-
-    content = data.get("content")
-
-    if not content or not isinstance(content, list):
-        # No carrier found for that MC
-        return CarrierValidationResponse(
-            mc_number=mc_number,
-            is_valid=False,
-            status="not_found",
-            reason="Carrier not found in FMCSA database",
-        )
-
-    carrier_data = content[0].get("carrier", {})
-
-    allowed_to_operate = carrier_data.get("allowedToOperate")
-    legal_name = carrier_data.get("legalName", "Unknown")
-
-    is_active = allowed_to_operate == "Y"
-
-    return CarrierValidationResponse(
-        mc_number=mc_number,
-        is_valid=is_active,
-        status="active" if is_active else "inactive",
-        reason=f"Carrier: {legal_name}, allowedToOperate={allowed_to_operate}",
-    )
+    
+    # Return structured response
+    return CarrierValidationResponse(**result)
 
 
 @app.post("/carrier/validate", response_model=CarrierValidationResponse)

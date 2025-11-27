@@ -102,10 +102,12 @@ function App() {
     <div
       style={{
         minHeight: "100vh",
+        width: "100%",
         backgroundColor: "#0f172a",
         color: "white",
         fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
         padding: "24px",
+        boxSizing: "border-box",
       }}
     >
       <header style={{ marginBottom: "24px" }}>
@@ -155,20 +157,20 @@ function App() {
           <section
             style={{
               display: "grid",
-              gridTemplateColumns: "minmax(0, 2fr) minmax(0, 1.5fr)",
+              gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
               gap: "24px",
               marginBottom: "32px",
             }}
           >
             <div style={cardStyle}>
               <h2 style={cardTitleStyle}>Outcomes by count</h2>
-              <div style={{ width: "100%", height: 260 }}>
+              <div style={{ width: "100%", height: 320 }}>
                 <ResponsiveContainer>
                   <BarChart data={outcomeData}>
                     <XAxis dataKey="outcome" />
                     <YAxis allowDecimals={false} />
                     <Tooltip />
-                    <Bar dataKey="count" />
+                    <Bar dataKey="count" fill="#3b82f6" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -179,18 +181,21 @@ function App() {
               {sentimentData.length === 0 ? (
                 <p style={{ opacity: 0.7 }}>No sentiment data yet.</p>
               ) : (
-                <div style={{ width: "100%", height: 260 }}>
+                <div style={{ width: "100%", height: 320 }}>
                   <ResponsiveContainer>
                     <PieChart>
                       <Pie
                         data={sentimentData}
                         dataKey="value"
                         nameKey="sentiment"
-                        outerRadius={90}
+                        outerRadius={110}
                         label
                       >
                         {sentimentData.map((_, idx) => (
-                          <Cell key={idx} />
+                          <Cell 
+                            key={idx} 
+                            fill={["#10b981", "#6b7280", "#ef4444"][idx % 3]}
+                          />
                         ))}
                       </Pie>
                       <Tooltip />
