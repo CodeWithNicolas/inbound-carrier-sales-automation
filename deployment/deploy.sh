@@ -72,6 +72,7 @@ echo -n "${INTERNAL_API_KEY}" | gcloud secrets versions add internal-api-key --d
 echo "Deploying API to Cloud Run..."
 env IMAGE_URL="${IMAGE_URL}" \
     SERVICE_NAME="carrier-api" \
+    SERVICE_ACCOUNT_EMAIL="${PROJECT_ID}-compute@developer.gserviceaccount.com" \
     FMCSA_SECRET_NAME="fmcsa-api-key" \
     INTERNAL_SECRET_NAME="internal-api-key" \
   envsubst < "${SCRIPT_DIR}/cloudrun-service.template.yaml" > "${SCRIPT_DIR}/cloudrun-service.yaml"
@@ -79,6 +80,14 @@ env IMAGE_URL="${IMAGE_URL}" \
 gcloud run services replace "${SCRIPT_DIR}/cloudrun-service.yaml" \
   --region="${REGION}" \
   --platform=managed
+
+# --- allow unauthenticated access to API ---
+echo "Allowing public access to API..."
+gcloud run services add-iam-policy-binding carrier-api \
+  --region="${REGION}" \
+  --member="allUsers" \
+  --role="roles/run.invoker" \
+  --quiet
 
 # --- get API URL ---
 API_SERVICE_URL=$(gcloud run services describe carrier-api \
@@ -104,6 +113,14 @@ env DASHBOARD_IMAGE_URL="${DASHBOARD_IMAGE_URL}" \
 gcloud run services replace "${SCRIPT_DIR}/cloudrun-dashboard.yaml" \
   --region="${REGION}" \
   --platform=managed
+
+# --- allow unauthenticated access to Dashboard ---
+echo "Allowing public access to Dashboard..."
+gcloud run services add-iam-policy-binding carrier-dashboard \
+  --region="${REGION}" \
+  --member="allUsers" \
+  --role="roles/run.invoker" \
+  --quiet
 
 # --- print Dashboard URL ---
 DASHBOARD_SERVICE_URL=$(gcloud run services describe carrier-dashboard \
