@@ -72,7 +72,6 @@ echo -n "${INTERNAL_API_KEY}" | gcloud secrets versions add internal-api-key --d
 echo "Deploying API to Cloud Run..."
 env IMAGE_URL="${IMAGE_URL}" \
     SERVICE_NAME="carrier-api" \
-    SERVICE_ACCOUNT_EMAIL="${PROJECT_ID}-compute@developer.gserviceaccount.com" \
     FMCSA_SECRET_NAME="fmcsa-api-key" \
     INTERNAL_SECRET_NAME="internal-api-key" \
   envsubst < "${SCRIPT_DIR}/cloudrun-service.template.yaml" > "${SCRIPT_DIR}/cloudrun-service.yaml"

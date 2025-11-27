@@ -20,8 +20,9 @@ spec:
         # Optional: concurrency (requests per container)
         autoscaling.knative.dev/target: "80"
     spec:
-      # Service account the Cloud Run service runs as
-      serviceAccountName: ${SERVICE_ACCOUNT_EMAIL}
+      # Service account - using default Cloud Run service account
+      # If you need a custom service account, uncomment and configure:
+      # serviceAccountName: ${SERVICE_ACCOUNT_EMAIL}
 
       containers:
         - image: ${IMAGE_URL}
