@@ -28,7 +28,8 @@ app = FastAPI(title="Acme Logistics Load API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",
+        "http://localhost:5173",  # Local development
+        "https://carrier-dashboard-660702485520.us-central1.run.app",  # Deployed dashboard
     ],
     allow_credentials=True,
     allow_methods=["*"],
