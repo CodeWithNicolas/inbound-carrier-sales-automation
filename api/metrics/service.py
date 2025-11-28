@@ -7,7 +7,7 @@ from .models import CallLogEntry
 
 class MetricsService:
     """Service for calculating metrics from call logs."""
-    
+
     @staticmethod
     def calculate_summary(calls: List[CallLogEntry]) -> Dict:
         """
@@ -28,7 +28,7 @@ class MetricsService:
             - avg_call_duration: Average call duration in seconds
         """
         total = len(calls)
-        
+
         # Handle empty case
         if total == 0:
             return {
@@ -41,21 +41,21 @@ class MetricsService:
                 "revenue_per_call": 0.0,
                 "avg_call_duration": 0.0,
             }
-        
+
         # Count booked calls
         booked = sum(1 for c in calls if c.outcome == "booked")
-        
+
         # Calculate average negotiation rounds
         total_rounds = sum(
             int(c.num_rounds) if c.num_rounds else 0 
             for c in calls
         )
-        
+
         # Build sentiment breakdown
         sentiments = {}
         for c in calls:
             sentiments[c.sentiment] = sentiments.get(c.sentiment, 0) + 1
-        
+
         # Calculate total revenue (sum of final_rate for booked calls)
         total_revenue = 0.0
         for c in calls:
@@ -65,7 +65,7 @@ class MetricsService:
                 except (ValueError, TypeError):
                     # Skip invalid rates
                     pass
-        
+
         # Calculate average call duration
         call_durations = [
             c.call_duration_seconds 
@@ -77,7 +77,7 @@ class MetricsService:
             if call_durations 
             else 0.0
         )
-        
+
         return {
             "total_calls": total,
             "booked": booked,

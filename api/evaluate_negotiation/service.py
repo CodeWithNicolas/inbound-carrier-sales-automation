@@ -1,8 +1,5 @@
 """
 Negotiation evaluation service.
-
-Implements business logic for deciding whether to accept, counter, or reject
-carrier rate offers during negotiation.
 """
 from .models import NegotiationRequest, NegotiationResponse
 
@@ -12,8 +9,8 @@ class NegotiationService:
 
     # Configuration constants
     MAX_ROUNDS = 3
-    ACCEPTABLE_MARGIN = 0.05  # Accept if within 5% of loadboard rate
-    COUNTER_THRESHOLD = 0.15  # Counter if within 15% of loadboard rate
+    ACCEPTABLE_MARGIN = 0.10  # Accept if within 10% of loadboard rate
+    COUNTER_THRESHOLD = 0.20  # Counter if within 20% of loadboard rate
 
     @classmethod
     def evaluate(cls, request: NegotiationRequest) -> NegotiationResponse:
@@ -21,8 +18,8 @@ class NegotiationService:
         Evaluate a carrier's offer and decide on action.
 
         Policy:
-        - If carrier offers <= loadboard_rate * 1.05 (5%) -> accept
-        - If offer is up to +15% above loadboard_rate and rounds left -> counter
+        - If carrier offers <= loadboard_rate * 1.10 (10%) -> accept
+        - If offer is up to +20% above loadboard_rate and rounds left -> counter
         - Otherwise -> reject
         - Maximum 3 negotiation rounds
 
@@ -47,7 +44,7 @@ class NegotiationService:
         # Calculate percentage difference
         delta = (offer - lb_rate) / lb_rate
 
-        # Decision 1: Accept if within acceptable margin (≤ 5%)
+        # Decision 1: Accept if within acceptable margin (≤ 10%)
         if delta <= cls.ACCEPTABLE_MARGIN:
             return NegotiationResponse(
                 decision="accept",
@@ -57,7 +54,7 @@ class NegotiationService:
 
         # Decision 2: Counter if moderately high and rounds remaining
         if delta <= cls.COUNTER_THRESHOLD and round_num < cls.MAX_ROUNDS:
-            # Calculate counter offer (midpoint between loadboard and offer, capped at +5%)
+            # Calculate counter offer (midpoint between loadboard and offer, capped at +10%)
             target = lb_rate * (1 + cls.ACCEPTABLE_MARGIN)
             counter = (offer + lb_rate) / 2
             counter_rate = min(counter, target)
@@ -69,14 +66,23 @@ class NegotiationService:
             )
 
         # Decision 3: Reject if max rounds reached
-        if round_num >= cls.MAX_ROUNDS and delta > cls.ACCEPTABLE_MARGIN:
+        if round_num >= cls.MAX_ROUNDS:
             return NegotiationResponse(
                 decision="reject",
                 counter_rate=None,
                 reason="Max negotiation rounds reached"
             )
 
-        # Decision 4: Reject if too expensive
+        # Decision 4: Counter with ACCEPTABLE_MARGIN if rounds remaining
+        if round_num < cls.MAX_ROUNDS:
+            target = lb_rate * (1 + cls.ACCEPTABLE_MARGIN)
+            return NegotiationResponse(
+                decision="counter",
+                counter_rate=target,
+                reason="Offer too high, countering with acceptable margin"
+            )
+
+        # Should not reach here, but fallback to reject
         return NegotiationResponse(
             decision="reject",
             counter_rate=None,

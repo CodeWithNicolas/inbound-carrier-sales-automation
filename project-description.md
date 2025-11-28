@@ -37,8 +37,8 @@ When carriers call your dedicated line:
    - Rate optimization (highest paying loads first)
 
 3. **Automated Negotiation** - Handles up to 3 rounds of price discussion:
-   - Accepts offers within 5% of loadboard rate
-   - Counters offers up to 15% above rate
+   - Accepts offers within 10% of loadboard rate
+   - Counters offers up to 20% above rate
    - Rejects excessive offers automatically
 
 4. **Qualified Transfer** - Only passes carriers to your team after:
@@ -90,14 +90,14 @@ Location-based search with smart filtering:
 Configurable negotiation strategy:
 
 **Policy Parameters:**
-- **Accept Threshold**: ≤5% above loadboard rate
-- **Counter Range**: 5-15% above loadboard rate
+- **Accept Threshold**: ≤10% above loadboard rate
+- **Counter Range**: 10-20% above loadboard rate
 - **Max Rounds**: 3 negotiation rounds
-- **Rejection**: >15% above rate or max rounds exceeded
+- **Rejection**: >20% above rate or max rounds exceeded
 
 **Negotiation Flow:**
 1. Carrier offers $2,600 on $2,450 load (+6.1%)
-2. System counters at $2,550 (meeting halfway, within 5% target)
+2. System counters at $2,550 (meeting halfway, within 10% target)
 3. Carrier accepts → Transfer to sales team
 
 ---
@@ -203,7 +203,7 @@ Current inventory status:
 ```
 POST   /carrier/validate       - FMCSA verification with safety data
 GET    /loads/search           - Location + equipment-based search
-POST   /negotiation/evaluate   - Rate offer analysis (5%/15% thresholds)
+POST   /negotiation/evaluate   - Rate offer analysis (10%/20% thresholds)
 POST   /calls/log              - Call outcome tracking
 GET    /metrics/summary        - Aggregate analytics
 GET    /metrics/calls          - Call history (most recent first)
