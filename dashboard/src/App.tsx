@@ -127,7 +127,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [carrierWarningCache, setCarrierWarningCache] = useState<Map<string, number>>(new Map());
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   
   // API Key authentication state
   const [apiKey, setApiKey] = useState<string | null>(null);
@@ -203,7 +202,6 @@ function App() {
         setSummary(summaryJson);
         setCalls(callsJson);
         setError(null);
-        setLastUpdated(new Date());
 
         // Pre-fetch carrier warnings for visible calls (top 25)
         prefetchCarrierWarnings(callsJson.slice(0, 25));
