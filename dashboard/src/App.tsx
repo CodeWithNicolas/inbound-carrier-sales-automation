@@ -461,7 +461,7 @@ function App() {
       >
         {activeView === 'loads' && <LoadsView />}
         {activeView === 'calls' && (
-          <RecentCallsView calls={calls} carrierWarningCache={carrierWarningCache} />
+          <RecentCallsView calls={calls} carrierWarningCache={carrierWarningCache} apiKey={apiKey} />
         )}
         {activeView === 'routes' && <RoutesView calls={calls} />}
         {activeView === 'analytics' && (

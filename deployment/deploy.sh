@@ -101,7 +101,7 @@ echo "API deployed at: ${API_SERVICE_URL}"
 echo "Building and pushing Dashboard image with API URL..."
 gcloud builds submit \
   --config "${SCRIPT_DIR}/cloudbuild-dashboard.yaml" \
-  --substitutions=_DASHBOARD_IMAGE_URL="${DASHBOARD_IMAGE_URL}",_API_URL="${API_SERVICE_URL}",_INTERNAL_API_KEY="${INTERNAL_API_KEY}" \
+  --substitutions=_DASHBOARD_IMAGE_URL="${DASHBOARD_IMAGE_URL}",_API_URL="${API_SERVICE_URL}" \
   "${REPO_ROOT}"
 
 # --- deploy Dashboard to Cloud Run ---

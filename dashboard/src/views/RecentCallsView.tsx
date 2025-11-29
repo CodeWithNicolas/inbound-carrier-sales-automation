@@ -2,7 +2,6 @@ import { useState } from 'react';
 import type { CallLogEntry, Outcome, Sentiment } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
-const API_KEY = import.meta.env.VITE_INTERNAL_API_KEY as string;
 
 interface CarrierDetails {
   mc_number: string;
@@ -34,6 +33,7 @@ interface CarrierWarning {
 interface RecentCallsViewProps {
   calls: CallLogEntry[];
   carrierWarningCache: Map<string, number>;
+  apiKey: string;
 }
 
 const OUTCOME_LABELS: Record<Outcome, string> = {
@@ -156,7 +156,7 @@ function evaluateCarrierWarnings(carrier: CarrierDetails): CarrierWarning[] {
   return warnings;
 }
 
-export function RecentCallsView({ calls, carrierWarningCache }: RecentCallsViewProps) {
+export function RecentCallsView({ calls, carrierWarningCache, apiKey }: RecentCallsViewProps) {
   const [selectedCarrier, setSelectedCarrier] = useState<CarrierDetails | null>(null);
   const [carrierLoading, setCarrierLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -170,7 +170,7 @@ export function RecentCallsView({ calls, carrierWarningCache }: RecentCallsViewP
       const response = await fetch(`${API_BASE_URL}/carrier/validate`, {
         method: 'POST',
         headers: {
-          'x-api-key': API_KEY,
+          'x-api-key': apiKey,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ mc_number: mcNumber }),
