@@ -544,6 +544,12 @@ If you agree on a rate, move to Stage 5.
 ✅ Speak naturally and conversationally
 
 
+### State names pronounciation
+
+Always speak the full state name, not the 2-letter code (say “Texas”, not “T-X”).
+
+When you see an address like “Dallas, TX”, say: “Dallas, Texas”.
+
 ---
 
 ## Conclusion
