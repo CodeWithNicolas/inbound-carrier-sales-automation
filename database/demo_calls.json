@@ -1,0 +1,123 @@
+[
+  {
+    "carrier_mc": "123456",
+    "load_id": "L001",
+    "initial_rate": "2000",
+    "final_rate": "1850",
+    "num_rounds": "2",
+    "outcome": "booked",
+    "sentiment": "positive",
+    "call_duration_seconds": 245,
+    "notes": "Carrier agreed to rate after brief negotiation. Load from Chicago to Dallas booked successfully.",
+    "created_at": "2025-11-28T14:30:00Z"
+  },
+  {
+    "carrier_mc": "789012",
+    "load_id": "L002",
+    "initial_rate": "1100",
+    "final_rate": "950",
+    "num_rounds": "3",
+    "outcome": "booked",
+    "sentiment": "neutral",
+    "call_duration_seconds": 312,
+    "notes": "Multiple rounds needed. Atlanta to Orlando reefer load booked at acceptable rate.",
+    "created_at": "2025-11-28T15:45:00Z"
+  },
+  {
+    "carrier_mc": "345678",
+    "load_id": "L003",
+    "initial_rate": "1600",
+    "final_rate": "1400",
+    "num_rounds": "1",
+    "outcome": "booked",
+    "sentiment": "positive",
+    "call_duration_seconds": 187,
+    "notes": "Quick agreement on flatbed load LA to Phoenix. Carrier was very cooperative.",
+    "created_at": "2025-11-28T16:20:00Z"
+  },
+  {
+    "carrier_mc": "901234",
+    "load_id": "L004",
+    "initial_rate": "1300",
+    "final_rate": null,
+    "num_rounds": "2",
+    "outcome": "lost_price",
+    "sentiment": "negative",
+    "call_duration_seconds": 156,
+    "notes": "Carrier wanted $1500 for Memphis to Chicago route. Too expensive, declined.",
+    "created_at": "2025-11-28T17:10:00Z"
+  },
+  {
+    "carrier_mc": "567890",
+    "load_id": null,
+    "initial_rate": null,
+    "final_rate": null,
+    "num_rounds": "1",
+    "outcome": "no_loads",
+    "sentiment": "neutral",
+    "call_duration_seconds": 53,
+    "notes": "No loads available for dry van out of Atlanta. Carrier not open to other options.",
+    "created_at": "2025-11-29T09:15:00Z"
+  },
+  {
+    "carrier_mc": "234567",
+    "load_id": "L005",
+    "initial_rate": "1200",
+    "final_rate": "1050",
+    "num_rounds": "2",
+    "outcome": "booked",
+    "sentiment": "positive",
+    "call_duration_seconds": 198,
+    "notes": "Newark to Boston run booked. Carrier appreciated tight delivery window consideration.",
+    "created_at": "2025-11-29T10:30:00Z"
+  },
+  {
+    "carrier_mc": "654321",
+    "load_id": null,
+    "initial_rate": null,
+    "final_rate": null,
+    "num_rounds": "1",
+    "outcome": "ineligible",
+    "sentiment": "neutral",
+    "call_duration_seconds": 89,
+    "notes": "Carrier MC not found in FMCSA database. Call terminated for compliance reasons.",
+    "created_at": "2025-11-29T11:00:00Z"
+  },
+  {
+    "carrier_mc": "111222",
+    "load_id": "L001",
+    "initial_rate": "1950",
+    "final_rate": null,
+    "num_rounds": "3",
+    "outcome": "lost_price",
+    "sentiment": "negative",
+    "call_duration_seconds": 267,
+    "notes": "Extended negotiation but carrier would not come below $1950. Market rate exceeded.",
+    "created_at": "2025-11-29T12:45:00Z"
+  },
+  {
+    "carrier_mc": "333444",
+    "load_id": "L003",
+    "initial_rate": "1500",
+    "final_rate": "1425",
+    "num_rounds": "2",
+    "outcome": "booked",
+    "sentiment": "positive",
+    "call_duration_seconds": 221,
+    "notes": "Flatbed carrier for LA-Phoenix route. Good safety record confirmed.",
+    "created_at": "2025-11-29T13:20:00Z"
+  },
+  {
+    "carrier_mc": "555666",
+    "load_id": "L002",
+    "initial_rate": "1050",
+    "final_rate": "975",
+    "num_rounds": "1",
+    "outcome": "booked",
+    "sentiment": "positive",
+    "call_duration_seconds": 143,
+    "notes": "Reefer specialist. Quick agreement on Atlanta-Orlando frozen food shipment.",
+    "created_at": "2025-11-29T14:05:00Z"
+  }
+]
+
