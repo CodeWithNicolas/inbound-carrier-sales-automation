@@ -32,10 +32,10 @@ export function LoadsView({ apiKey }: LoadsViewProps) {
     // Initial fetch
     fetchLoads();
 
-    // Set up auto-refresh every 30 seconds for loads
+    // Set up auto-refresh every 1 minute for loads
     const refreshInterval = setInterval(() => {
       fetchLoads();
-    }, 30000);
+    }, 60000);
 
     // Cleanup interval on unmount
     return () => clearInterval(refreshInterval);

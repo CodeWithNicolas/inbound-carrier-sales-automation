@@ -216,10 +216,10 @@ function App() {
     // Initial fetch
     fetchData();
 
-    // Set up auto-refresh every 10 seconds
+    // Set up auto-refresh every 1 minute
     const refreshInterval = setInterval(() => {
       fetchData();
-    }, 10000);
+    }, 60000);
 
     // Cleanup interval on unmount
     return () => clearInterval(refreshInterval);

@@ -289,8 +289,15 @@ function analyzeLanes(calls: CallLogEntry[]): Lane[] {
     }
   });
 
-  // Sort by count (most popular lanes first)
-  return Array.from(laneMap.values()).sort((a, b) => b.count - a.count);
+  // Sort by total revenue first (highest revenue lanes), then by count
+  return Array.from(laneMap.values()).sort((a, b) => {
+    // Primary sort: by total revenue (descending)
+    if (b.totalRevenue !== a.totalRevenue) {
+      return b.totalRevenue - a.totalRevenue;
+    }
+    // Secondary sort: by count (descending)
+    return b.count - a.count;
+  });
 }
 
 function extractOrigin(call: CallLogEntry): string {
@@ -349,7 +356,13 @@ function analyzeRegionalPerformance(calls: CallLogEntry[]) {
       revenue: data.revenue,
       bookingRate: data.count > 0 ? (data.booked / data.count) * 100 : 0,
     }))
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => {
+      // Sort by revenue first (highest revenue regions), then by count
+      if (b.revenue !== a.revenue) {
+        return b.revenue - a.revenue;
+      }
+      return b.count - a.count;
+    });
 }
 
 function calculateAvgRatePerMile(calls: CallLogEntry[]): string {
