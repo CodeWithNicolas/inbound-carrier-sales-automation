@@ -28,10 +28,10 @@ class LoadSearchService:
         weight = load.get("weight", "")
         pickup = load.get("pickup_datetime", "")
         notes = load.get("notes", "")
-        
+
         # Build the pitch dynamically
         pitch_parts = []
-        
+
         # Start with route and rate
         if rate:
             try:
@@ -41,10 +41,10 @@ class LoadSearchService:
                 pitch_parts.append(f"I have a great load paying ${rate}")
         else:
             pitch_parts.append("I have a load available")
-        
+
         # Add route
         pitch_parts.append(f"from {origin} to {destination}")
-        
+
         # Add miles if available
         if miles:
             try:
@@ -52,11 +52,11 @@ class LoadSearchService:
                 pitch_parts[-1] += f", that's {miles_int} miles"
             except (ValueError, TypeError):
                 pass
-        
+
         # Add equipment
         if equipment:
             pitch_parts.append(f"You'll need a {equipment}")
-        
+
         # Add pickup date/time
         if pickup:
             try:
@@ -71,7 +71,7 @@ class LoadSearchService:
                     pitch_parts.append(f"Pickup is {date_str}")
             except (ValueError, TypeError):
                 pass
-        
+
         # Add commodity and weight
         cargo_info = []
         if commodity:
@@ -82,15 +82,15 @@ class LoadSearchService:
                 cargo_info.append(f"{weight_int:,} pounds")
             except (ValueError, TypeError):
                 cargo_info.append(f"{weight} pounds")
-        
+
         if cargo_info:
             pitch_parts.append(f"You'll be hauling {', '.join(cargo_info)}")
-        
+
         # Add special features from notes
         if notes:
             notes_lower = notes.lower()
             special_features = []
-            
+
             if "drop" in notes_lower and "hook" in notes_lower:
                 special_features.append("it's drop and hook")
             if "live load" in notes_lower:
@@ -101,13 +101,13 @@ class LoadSearchService:
                 special_features.append("tarping required")
             if "frozen" in notes_lower or "reefer" in notes_lower:
                 special_features.append("temperature controlled")
-            
+
             if special_features:
                 pitch_parts.append(f"Please note, {' and '.join(special_features)}")
-        
+
         # Join all parts into a natural pitch
         pitch = ". ".join(pitch_parts) + "."
-        
+
         return pitch
 
     def search(
@@ -219,4 +219,3 @@ class LoadSearchService:
 
         # Sort descending by rate
         return sorted(loads, key=get_rate, reverse=True)
-
