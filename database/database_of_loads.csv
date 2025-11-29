@@ -2,6 +2,6 @@ load_id,origin,destination,pickup_datetime,delivery_datetime,equipment_type,load
 L001,"Chicago, IL","Dallas, TX",2025-12-25T08:00:00,2025-12-27T17:00:00,Dry Van,1800,"Live load, FCFS",18000,Electronics,22,925,"53ft trailer"
 L002,"Atlanta, GA","Orlando, FL",2025-12-11T09:00:00,2025-12-14T20:00:00,Reefer,950,"Frozen, must maintain -10C",12000,"Frozen Food",18,440,"53ft reefer"
 L003,"Los Angeles, CA","Phoenix, AZ",2025-12-10T07:00:00,2025-12-15T18:00:00,Flatbed,1400,"Tarp required",35000,"Building Materials",10,370,"48ft flatbed"
-L004,"Memphis, TN","Chicago, IL",2025-11-30T10:00:00,2025-12-01T12:00:00,Dry Van,1100,"Drop & hook",26000,"Consumer Goods",20,530,"53ft trailer"
-L004,"Memphis, TN","Phoenix, AZ",2025-12-01T10:00:00,2025-12-02T12:00:00,Dry Van,1300,"Drop & hook",26000,"Consumer Goods",20,530,"53ft trailer"
+L004,"Memphis, TN","Chicago, IL",2025-12-01T10:00:00,2025-12-02T12:00:00,Dry Van,1100,"Drop & hook",26000,"Consumer Goods",20,530,"53ft trailer"
+L004,"Memphis, TN","Phoenix, AZ",2025-12-02T10:00:00,2025-12-03T12:00:00,Dry Van,1300,"Drop & hook",26000,"Consumer Goods",20,530,"53ft trailer"
 L005,"Newark, NJ","Boston, MA",2025-11-30T13:00:00,2025-11-26T09:00:00,Dry Van,1050,"Tight delivery window",15000,Apparel,16,230,"53ft trailer"
