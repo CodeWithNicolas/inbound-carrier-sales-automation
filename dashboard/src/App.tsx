@@ -117,7 +117,8 @@ function evaluateCarrierWarnings(carrier: CarrierDetails): CarrierWarning[] {
     }
   }
 
-  if (!carrier.phone || carrier.phone.trim() === '') {
+  // Only show phone number warning if there are other warnings present
+  if ((!carrier.phone || carrier.phone.trim() === '') && warnings.length > 0) {
     warnings.push({
       level: 'low',
       title: '📞 Missing Phone Number',
