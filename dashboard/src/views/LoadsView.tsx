@@ -1,15 +1,10 @@
 import { useEffect, useState } from 'react';
-import type { Load, CallLogEntry } from '../types';
+import type { Load } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
 
 interface LoadsViewProps {
   apiKey: string;
-}
-
-interface LoadWithStatus extends Load {
-  isBooked: boolean;
-  bookedBy?: string;
 }
 
 function formatDateTime(iso: string): string {
@@ -23,16 +18,15 @@ function formatDateTime(iso: string): string {
 }
 
 export function LoadsView({ apiKey }: LoadsViewProps) {
-  const [loads, setLoads] = useState<LoadWithStatus[]>([]);
-  const [filteredLoads, setFilteredLoads] = useState<LoadWithStatus[]>([]);
+  const [loads, setLoads] = useState<Load[]>([]);
+  const [filteredLoads, setFilteredLoads] = useState<Load[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
   // Filter states
   const [searchTerm, setSearchTerm] = useState('');
   const [equipmentFilter, setEquipmentFilter] = useState('all');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'available' | 'booked'>('all');
-  const [selectedLoad, setSelectedLoad] = useState<LoadWithStatus | null>(null);
+  const [selectedLoad, setSelectedLoad] = useState<Load | null>(null);
 
   useEffect(() => {
     // Initial fetch
@@ -66,14 +60,8 @@ export function LoadsView({ apiKey }: LoadsViewProps) {
       filtered = filtered.filter((load) => load.equipment_type === equipmentFilter);
     }
 
-    if (statusFilter === 'available') {
-      filtered = filtered.filter((load) => !load.isBooked);
-    } else if (statusFilter === 'booked') {
-      filtered = filtered.filter((load) => load.isBooked);
-    }
-
     setFilteredLoads(filtered);
-  }, [loads, searchTerm, equipmentFilter, statusFilter]);
+  }, [loads, searchTerm, equipmentFilter]);
 
   async function fetchLoads() {
     try {
@@ -83,42 +71,18 @@ export function LoadsView({ apiKey }: LoadsViewProps) {
       }
       setError(null);
 
-      // Fetch both loads and calls in parallel
-      const [loadsResponse, callsResponse] = await Promise.all([
-        fetch(`${API_BASE_URL}/loads`, {
-          headers: { 'x-api-key': apiKey },
-        }),
-        fetch(`${API_BASE_URL}/metrics/calls`, {
-          headers: { 'x-api-key': apiKey },
-        }),
-      ]);
+      const response = await fetch(`${API_BASE_URL}/loads`, {
+        headers: {
+          'x-api-key': apiKey,
+        },
+      });
 
-      if (!loadsResponse.ok) {
-        throw new Error(`Failed to fetch loads: ${loadsResponse.statusText}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch loads: ${response.statusText}`);
       }
 
-      const loadsData = await loadsResponse.json();
-      const rawLoads: Load[] = loadsData.loads || [];
-
-      // Get booked loads from calls
-      let bookedLoads = new Map<string, string>(); // load_id -> carrier_mc
-      if (callsResponse.ok) {
-        const callsData: CallLogEntry[] = await callsResponse.json();
-        callsData.forEach((call) => {
-          if (call.outcome === 'booked' && call.load_id) {
-            bookedLoads.set(call.load_id, call.carrier_mc);
-          }
-        });
-      }
-
-      // Merge booking status with loads
-      const loadsWithStatus: LoadWithStatus[] = rawLoads.map((load) => ({
-        ...load,
-        isBooked: bookedLoads.has(load.load_id),
-        bookedBy: bookedLoads.get(load.load_id),
-      }));
-
-      setLoads(loadsWithStatus);
+      const data = await response.json();
+      setLoads(data.loads || []);
     } catch (err: any) {
       console.error('Error fetching loads:', err);
       setError(err.message || 'Failed to fetch loads');
@@ -154,7 +118,7 @@ export function LoadsView({ apiKey }: LoadsViewProps) {
 
       {/* Filters */}
       <section style={{ ...cardStyle, marginBottom: 24 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 16 }}>
           <input
             type="text"
             placeholder="Search by Load ID, Origin, Destination, or Commodity..."
@@ -170,24 +134,6 @@ export function LoadsView({ apiKey }: LoadsViewProps) {
               outline: 'none',
             }}
           />
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as 'all' | 'available' | 'booked')}
-            style={{
-              padding: '10px 14px',
-              backgroundColor: 'rgba(148, 163, 184, 0.1)',
-              border: '1px solid rgba(148, 163, 184, 0.3)',
-              borderRadius: 8,
-              color: 'white',
-              fontSize: 14,
-              outline: 'none',
-              minWidth: 150,
-            }}
-          >
-            <option value="all">All Status</option>
-            <option value="available">Available</option>
-            <option value="booked">Booked</option>
-          </select>
           <select
             value={equipmentFilter}
             onChange={(e) => setEquipmentFilter(e.target.value)}
@@ -222,14 +168,9 @@ export function LoadsView({ apiKey }: LoadsViewProps) {
             marginBottom: 16,
           }}
         >
-          <div>
-            <h2 style={cardTitleStyle}>
-              {filteredLoads.length} Load{filteredLoads.length !== 1 ? 's' : ''}
-            </h2>
-            <p style={{ fontSize: 13, opacity: 0.7, marginTop: 4 }}>
-              {loads.filter(l => !l.isBooked).length} Available • {loads.filter(l => l.isBooked).length} Booked
-            </p>
-          </div>
+          <h2 style={cardTitleStyle}>
+            {filteredLoads.length} Load{filteredLoads.length !== 1 ? 's' : ''}
+          </h2>
           <button
             onClick={fetchLoads}
             style={{
@@ -276,7 +217,6 @@ export function LoadsView({ apiKey }: LoadsViewProps) {
             >
               <thead>
                 <tr style={{ textAlign: 'left', opacity: 0.8 }}>
-                  <th style={{ padding: '8px' }}>Status</th>
                   <th style={{ padding: '8px' }}>Load ID</th>
                   <th style={{ padding: '8px' }}>Origin → Destination</th>
                   <th style={{ padding: '8px' }}>Pickup</th>
@@ -300,48 +240,14 @@ export function LoadsView({ apiKey }: LoadsViewProps) {
                       style={{
                         borderTop: '1px solid rgba(148, 163, 184, 0.3)',
                         cursor: 'pointer',
-                        opacity: load.isBooked ? 0.6 : 1,
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = load.isBooked 
-                          ? 'rgba(16, 185, 129, 0.1)' 
-                          : 'rgba(59, 130, 246, 0.1)';
+                        e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = 'transparent';
                       }}
                     >
-                      <td style={{ padding: '12px 8px' }}>
-                        {load.isBooked ? (
-                          <span
-                            style={{
-                              padding: '4px 8px',
-                              backgroundColor: 'rgba(16, 185, 129, 0.2)',
-                              border: '1px solid rgba(16, 185, 129, 0.5)',
-                              borderRadius: 6,
-                              fontSize: 12,
-                              fontWeight: 500,
-                              color: '#10b981',
-                            }}
-                          >
-                            ✓ Booked
-                          </span>
-                        ) : (
-                          <span
-                            style={{
-                              padding: '4px 8px',
-                              backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                              border: '1px solid rgba(59, 130, 246, 0.5)',
-                              borderRadius: 6,
-                              fontSize: 12,
-                              fontWeight: 500,
-                              color: '#3b82f6',
-                            }}
-                          >
-                            Available
-                          </span>
-                        )}
-                      </td>
                       <td style={{ padding: '12px 8px', fontWeight: 500 }}>{load.load_id}</td>
                       <td style={{ padding: '12px 8px' }}>
                         <div>{load.origin}</div>
@@ -450,32 +356,6 @@ export function LoadsView({ apiKey }: LoadsViewProps) {
         </h2>
 
             <div style={{ display: 'grid', gap: '24px' }}>
-              {/* Booking Status */}
-              <div
-                style={{
-                  padding: '16px',
-                  borderRadius: '8px',
-                  backgroundColor: selectedLoad.isBooked
-                    ? 'rgba(16, 185, 129, 0.2)'
-                    : 'rgba(59, 130, 246, 0.2)',
-                  border: `2px solid ${selectedLoad.isBooked ? '#10b981' : '#3b82f6'}`,
-                }}
-              >
-                <div style={{ fontSize: '16px', fontWeight: 600, marginBottom: '8px' }}>
-                  {selectedLoad.isBooked ? '✓ Load Booked' : '📦 Load Available'}
-                </div>
-                {selectedLoad.isBooked && selectedLoad.bookedBy && (
-                  <div style={{ fontSize: '14px', opacity: 0.9 }}>
-                    Booked by Carrier MC: <strong>{selectedLoad.bookedBy}</strong>
-                  </div>
-                )}
-                {!selectedLoad.isBooked && (
-                  <div style={{ fontSize: '14px', opacity: 0.9 }}>
-                    This load is available for booking
-                  </div>
-                )}
-              </div>
-
               {/* Route Info */}
               <div>
                 <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px' }}>
