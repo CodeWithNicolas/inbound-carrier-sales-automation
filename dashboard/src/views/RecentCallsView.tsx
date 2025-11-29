@@ -144,16 +144,6 @@ function evaluateCarrierWarnings(carrier: CarrierDetails): CarrierWarning[] {
     }
   }
 
-  // Only show phone number warning if there are other warnings present
-  if ((!carrier.phone || carrier.phone.trim() === '') && warnings.length > 0) {
-    warnings.push({
-      level: 'low',
-      title: '📞 Missing Phone Number',
-      message:
-        'No phone number on file. This may make it difficult to contact the carrier in case of issues.',
-    });
-  }
-
   return warnings;
 }
 
