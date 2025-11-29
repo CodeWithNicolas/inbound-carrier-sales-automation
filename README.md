@@ -26,29 +26,49 @@ inbound-carrier-sales-automation/
 ├── api/                          # FastAPI backend
 │   ├── main.py                   # API server with endpoints
 │   ├── fmcsa_api/                # FMCSA carrier verification
+│   │   └── service.py
 │   ├── search_load/              # Load matching logic
+│   │   └── service.py
 │   ├── evaluate_negotiation/    # Rate negotiation engine
+│   │   ├── models.py
+│   │   └── service.py
 │   ├── metrics/                  # Call tracking and analytics
+│   │   ├── models.py
+│   │   ├── service.py
+│   │   └── storage.py
 │   └── requirements.txt          # Python dependencies
 │
 ├── dashboard/                    # React analytics dashboard
 │   ├── src/
 │   │   ├── App.tsx              # Main app with login
-│   │   ├── components/          # Sidebar, USMap
-│   │   └── views/               # Analytics, Calls, Routes, Loads
+│   │   ├── main.tsx             # Application entry point
+│   │   ├── types.ts             # TypeScript type definitions
+│   │   ├── components/          # Reusable components
+│   │   │   ├── Sidebar.tsx
+│   │   │   └── USMap.tsx
+│   │   └── views/               # Main view components
+│   │       ├── AnalyticsView.tsx
+│   │       ├── LoadsView.tsx
+│   │       ├── RecentCallsView.tsx
+│   │       └── RoutesView.tsx
 │   ├── Dockerfile               # Dashboard container
+│   ├── nginx.conf               # NGINX configuration
+│   ├── vite.config.ts           # Vite build configuration
 │   └── package.json             # Node dependencies
 │
-├── database/                     # Load inventory
-│   └── database_of_loads.csv    # Available loads data
+├── database/                     # Data storage
+│   ├── database_of_loads.csv    # Available loads inventory
+│   └── demo_calls.json          # Sample call data
 │
 ├── deployment/                   # GCP deployment configs
 │   ├── deploy.sh                # One-command deployment script
 │   ├── cloudbuild.yaml          # API build configuration
 │   ├── cloudbuild-dashboard.yaml # Dashboard build configuration
-│   └── cloudrun-*.template.yaml # Cloud Run service templates
+│   ├── cloudrun-service.template.yaml      # API Cloud Run template
+│   └── cloudrun-dashboard.template.yaml    # Dashboard Cloud Run template
 │
 ├── Dockerfile                    # API container
+├── cloudrun-service.yaml         # Cloud Run service configuration
 ├── project-description.md        # Complete project documentation
 └── deployment-description.md     # Deployment guide
 ```
