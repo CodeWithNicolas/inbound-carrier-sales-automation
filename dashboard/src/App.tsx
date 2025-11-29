@@ -460,7 +460,7 @@ function App() {
           boxSizing: 'border-box',
         }}
       >
-        {activeView === 'loads' && <LoadsView />}
+        {activeView === 'loads' && <LoadsView apiKey={apiKey} />}
         {activeView === 'calls' && (
           <RecentCallsView calls={calls} carrierWarningCache={carrierWarningCache} apiKey={apiKey} />
         )}

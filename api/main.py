@@ -68,6 +68,17 @@ ALL_LOADS = load_loads()
 # Initialize call storage
 call_storage = CallStorage()
 
+@app.get("/loads")
+def get_all_loads(_authorized: bool = Depends(verify_api_key)):
+    """
+    Get all available loads from the database.
+    
+    Returns all loads sorted by pickup date.
+    """
+    # Sort by pickup_datetime (most recent first)
+    sorted_loads = sorted(ALL_LOADS, key=lambda x: x.get("pickup_datetime", ""), reverse=True)
+    return {"count": len(sorted_loads), "loads": sorted_loads}
+
 @app.get("/loads/search")
 def search_loads(
     origin: str = Query(..., description="Origin city or state (required)"),

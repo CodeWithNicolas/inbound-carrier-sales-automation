@@ -270,7 +270,9 @@ function analyzeLanes(calls: CallLogEntry[]): Lane[] {
     
     if (call.final_rate) {
       const rate = parseFloat(call.final_rate);
+      if (!isNaN(rate)) {
       lane.totalRevenue += rate;
+      }
     }
     
     if (call.outcome === 'booked') {
@@ -329,7 +331,10 @@ function analyzeRegionalPerformance(calls: CallLogEntry[]) {
     data.count++;
     
     if (call.final_rate) {
-      data.revenue += parseFloat(call.final_rate);
+      const rate = parseFloat(call.final_rate);
+      if (!isNaN(rate)) {
+        data.revenue += rate;
+      }
     }
     
     if (call.outcome === 'booked') {
@@ -351,7 +356,8 @@ function calculateAvgRatePerMile(calls: CallLogEntry[]): string {
   // Simplified calculation - in production you'd have actual distances
   const totalRate = calls.reduce((sum, call) => {
     if (call.final_rate) {
-      return sum + parseFloat(call.final_rate);
+      const rate = parseFloat(call.final_rate);
+      return !isNaN(rate) ? sum + rate : sum;
     }
     return sum;
   }, 0);
