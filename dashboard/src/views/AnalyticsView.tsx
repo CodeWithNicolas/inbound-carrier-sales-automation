@@ -132,16 +132,16 @@ export function AnalyticsView({ summary, calls, loading, error }: AnalyticsViewP
               {outcomeData.length === 0 ? (
                 <p style={{ opacity: 0.7 }}>No outcome data yet.</p>
               ) : (
-                <div style={{ width: '100%', height: 320, minHeight: 320 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={outcomeData}>
-                      <XAxis dataKey="outcome" />
-                      <YAxis allowDecimals={false} />
-                      <Tooltip />
-                      <Bar dataKey="count" fill="#3b82f6" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
+              <div style={{ width: '100%', height: 320, minHeight: 320 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={outcomeData}>
+                    <XAxis dataKey="outcome" />
+                    <YAxis allowDecimals={false} />
+                    <Tooltip />
+                    <Bar dataKey="count" fill="#3b82f6" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
               )}
             </div>
 

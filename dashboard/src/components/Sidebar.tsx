@@ -38,6 +38,13 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
       {/* Navigation Buttons */}
       <nav style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', alignItems: 'center' }}>
         <NavButton
+          icon={<ChartIcon />}
+          label="Analytics"
+          active={activeView === 'analytics'}
+          onClick={() => onViewChange('analytics')}
+          color="#f59e0b"
+        />
+        <NavButton
           icon={<BoxIcon />}
           label="Loads"
           active={activeView === 'loads'}
@@ -57,13 +64,6 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
           active={activeView === 'routes'}
           onClick={() => onViewChange('routes')}
           color="#f43f5e"
-        />
-        <NavButton
-          icon={<ChartIcon />}
-          label="Analytics"
-          active={activeView === 'analytics'}
-          onClick={() => onViewChange('analytics')}
-          color="#f59e0b"
         />
       </nav>
     </div>

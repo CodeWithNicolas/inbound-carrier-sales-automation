@@ -137,6 +137,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [carrierWarningCache, setCarrierWarningCache] = useState<Map<string, number>>(new Map());
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   
   // API Key authentication state
   const [apiKey, setApiKey] = useState<string | null>(null);
@@ -185,7 +186,10 @@ function App() {
     
     async function fetchData() {
       try {
+        // Only show loading on initial fetch
+        if (calls.length === 0) {
         setLoading(true);
+        }
 
         const [summaryRes, callsRes] = await Promise.all([
           fetch(`${API_BASE_URL}/metrics/summary`, {
@@ -209,6 +213,7 @@ function App() {
         setSummary(summaryJson);
         setCalls(callsJson);
         setError(null);
+        setLastUpdated(new Date());
 
         // Pre-fetch carrier warnings for visible calls (top 25)
         prefetchCarrierWarnings(callsJson.slice(0, 25));
@@ -220,7 +225,16 @@ function App() {
       }
     }
 
+    // Initial fetch
     fetchData();
+
+    // Set up auto-refresh every 10 seconds
+    const refreshInterval = setInterval(() => {
+      fetchData();
+    }, 10000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(refreshInterval);
   }, [apiKey]);
 
   async function prefetchCarrierWarnings(callsList: CallLogEntry[]) {

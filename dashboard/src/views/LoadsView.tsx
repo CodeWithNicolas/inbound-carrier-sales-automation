@@ -29,7 +29,16 @@ export function LoadsView({ apiKey }: LoadsViewProps) {
   const [selectedLoad, setSelectedLoad] = useState<Load | null>(null);
 
   useEffect(() => {
+    // Initial fetch
     fetchLoads();
+
+    // Set up auto-refresh every 30 seconds for loads
+    const refreshInterval = setInterval(() => {
+      fetchLoads();
+    }, 30000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(refreshInterval);
   }, []);
 
   useEffect(() => {
@@ -56,7 +65,10 @@ export function LoadsView({ apiKey }: LoadsViewProps) {
 
   async function fetchLoads() {
     try {
-      setLoading(true);
+      // Only show loading spinner on initial load
+      if (loads.length === 0) {
+        setLoading(true);
+      }
       setError(null);
 
       const response = await fetch(`${API_BASE_URL}/loads`, {
